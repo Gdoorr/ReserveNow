@@ -41,7 +41,7 @@ namespace ReserveNow.ViewModels
             {
                 var loginRequest = new LoginRequest
                 {
-                    Mail = Username,
+                    Email = Username,
                     Password = Password
                 };
 

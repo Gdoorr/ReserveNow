@@ -8,7 +8,7 @@ namespace ReserveNow.Models
 {
     public class LoginRequest
     {
-        public string Mail { get; set; }
+        public string Email { get; set; }
         public string Password { get; set; }
     }
 }

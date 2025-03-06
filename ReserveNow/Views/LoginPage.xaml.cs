@@ -13,7 +13,7 @@ namespace ReserveNow
         public LoginPage()
         {
             InitializeComponent();
-          
+            SecureStorage.RemoveAll();
         }
         private async void OnLoginButtonClicked(object sender, EventArgs e)
         {
@@ -35,9 +35,15 @@ namespace ReserveNow
 
                 if (!string.IsNullOrEmpty(token))
                 {
+                    // Проверяем, истек ли токен
+                    if (IsTokenExpired(token))
+                    {
+                        await DisplayAlert("Ошибка", "Полученный токен уже истек. Пожалуйста, повторите попытку.", "OK");
+                        return;
+                    }
+
                     // Сохраняем токен в SecureStorage
                     await SecureStorage.SetAsync("AccessToken", token);
-
                     // Переходим на главную страницу
                     await Navigation.PushAsync(new MainPage());
                 }
@@ -63,7 +69,7 @@ namespace ReserveNow
 
             var loginData = new
             {
-                Username = username,
+                Email = username,
                 Password = password
             };
 
@@ -75,12 +81,69 @@ namespace ReserveNow
             if (response.IsSuccessStatusCode)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<dynamic>(responseString);
+                var jsonResponse = JsonSerializer.Deserialize<JsonDocument>(responseString);
 
-                return result.token; // Предполагается, что сервер возвращает токен в поле "token"
+                // Проверяем, существует ли свойство "token" в ответе
+                if (jsonResponse.RootElement.TryGetProperty("token", out var tokenProperty))
+                {
+                    return tokenProperty.GetString(); // Получаем значение токена
+                }
             }
 
             return null;
+        }
+        private bool IsTokenExpired(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                return true; // Если токен пустой, считаем его недействительным
+            }
+
+            try
+            {
+                // Разделяем токен на части
+                var parts = token.Split('.');
+                if (parts.Length < 2)
+                {
+                    return true; // Неверный формат токена
+                }
+
+                // Берем вторую часть (payload) и декодируем её
+                var payloadBase64 = parts[1];
+                var payloadJson = DecodeBase64(payloadBase64);
+
+                // Парсим JSON-строку
+                var payload = JsonDocument.Parse(payloadJson);
+                if (!payload.RootElement.TryGetProperty("exp", out var expProperty))
+                {
+                    return true; // Если нет поля 'exp', считаем токен недействительным
+                }
+
+                // Получаем время истечения
+                if (expProperty.ValueKind != JsonValueKind.Number)
+                {
+                    return true; // Поле 'exp' должно быть числом
+                }
+
+                var expirationTimeUnix = expProperty.GetInt64();
+                var expirationDateTimeUtc = DateTimeOffset.FromUnixTimeSeconds(expirationTimeUnix).UtcDateTime;
+
+                // Сравниваем с текущим временем
+                var currentTimeUtc = DateTime.UtcNow;
+                return currentTimeUtc >= expirationDateTimeUtc; // true, если токен истек
+            }
+            catch
+            {
+                return true; // При любой ошибке считаем токен недействительным
+            }
+        }
+
+        private string DecodeBase64(string base64String)
+        {
+            // Добавляем недостающие '=' для корректного Base64
+            base64String += new string('=', base64String.Length % 4);
+            var bytes = Convert.FromBase64String(base64String);
+            return System.Text.Encoding.UTF8.GetString(bytes);
         }
     }
 }
