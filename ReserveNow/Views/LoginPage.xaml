@@ -3,14 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:ReserveNow.ViewModels"
              x:Class="ReserveNow.LoginPage">
-    <ContentPage.BindingContext>
-        <vm:LoginViewModel />
-    </ContentPage.BindingContext>
 
     <VerticalStackLayout Padding="20" Spacing="15">
-        <Entry Placeholder="Логин" Text="{Binding Username}" />
-        <Entry Placeholder="Пароль" IsPassword="True" Text="{Binding Password}" />
-        <Button Text="Войти" Command="{Binding LoginCommand}" IsEnabled="{Binding IsNotBusy}" />
-        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
+        <Entry x:Name="UsernameEntry" Placeholder="Логин" />
+        <Entry x:Name="PasswordEntry" Placeholder="Пароль" IsPassword="True" />
+        <Button Text="Войти" Clicked="OnLoginButtonClicked" />
+        <ActivityIndicator x:Name="LoadingIndicator" IsVisible="False" IsRunning="False" />
     </VerticalStackLayout>
 </ContentPage>
