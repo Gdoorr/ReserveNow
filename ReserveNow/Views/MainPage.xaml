@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ReserveNow.MainPage">
 
-    <ScrollView>
-        <VerticalStackLayout>
-            <Label Text="Вы успешно вошли!" HorizontalOptions="Center" VerticalOptions="Center" />
-        </VerticalStackLayout>
-    </ScrollView>
+    <VerticalStackLayout Spacing="25" Padding="30">
+    <Label Text="Welcome to the Main Page!" FontSize="Large" HorizontalTextAlignment="Center" />
+    <Button Text="Fetch Data" Clicked="OnFetchDataClicked" />
+    <Label x:Name="DataLabel" Text="" HorizontalTextAlignment="Center" />
+    </VerticalStackLayout>
 
 </ContentPage>
