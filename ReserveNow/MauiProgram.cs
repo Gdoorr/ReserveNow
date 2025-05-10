@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using ReserveNow.Services;
 
 
 
@@ -18,6 +17,12 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
 #if DEBUG
+        builder.Services.AddSingleton<HttpClient>();
+
+        // Регистрация сервисов
+        builder.Services.AddSingleton<AuthService>();
+        builder.Services.AddSingleton<ApiService>();
+        builder.Services.AddSingleton<MainPage>();
         builder.Logging.AddDebug();
 #endif
 

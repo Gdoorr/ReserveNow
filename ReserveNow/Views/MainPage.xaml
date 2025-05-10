@@ -3,10 +3,74 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ReserveNow.MainPage">
 
-    <VerticalStackLayout Spacing="25" Padding="30">
-    <Label Text="Welcome to the Main Page!" FontSize="Large" HorizontalTextAlignment="Center" />
-    <Button Text="Fetch Data" Clicked="OnFetchDataClicked" />
-    <Label x:Name="DataLabel" Text="" HorizontalTextAlignment="Center" />
-    </VerticalStackLayout>
+    <Grid RowDefinitions="Auto,*,Auto">
+        <StackLayout Orientation="Horizontal" Padding="10" BackgroundColor="LightGray">
+            <SearchBar Placeholder="Поиск заведений..." WidthRequest="250" />
+            <Picker x:Name="CityPicker"
+                Title="Select a city"
+                SelectedIndexChanged="OnCitySelected" />
+            <ImageButton Source="settings_icon.png" WidthRequest="30" HeightRequest="30" Margin="10,0,0,0" Clicked="OnSettingsClicked" />
+        </StackLayout>
+
+        <!-- Центральная часть -->
+        <ScrollView Grid.Row="1" Padding="10">
+            <StackLayout Spacing="10">
+                <!-- Блок "Ближайшие бронирования" -->
+                <Label Text="Ближайшие бронирования" FontSize="25" FontAttributes="Bold" />
+                <CollectionView ItemsSource="{Binding UpcomingBookings}" HeightRequest="100">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame CornerRadius="10" Padding="10" BackgroundColor="White">
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="{Binding RestaurantName}" FontSize="Medium" TextColor="Black"/>
+                                    <Label Text="{Binding BookingDate}" FontSize="Small" Margin="10,0,0,0" TextColor="Black"/>
+                                    <Button Text="Отменить" Clicked="OnCancelBookingClicked" TextColor="Black"/>
+                                </StackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <!-- Блок "Рекомендуемые заведения" -->
+                <Label Text="Рекомендуемые заведения" FontSize="25" FontAttributes="Bold" />
+                <CollectionView x:Name="RestaurantsList">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Padding="10" BackgroundColor="LightGray" CornerRadius="10">
+                                <StackLayout>
+                                    <!-- Фото ресторана -->
+                                    <Image Source="{Binding ImageUrl}" Aspect="AspectFill" HeightRequest="150" />
+
+                                    <!-- Название и адрес -->
+                                    <Label Text="{Binding Name}" FontSize="Medium" />
+                                    <Label Text="{Binding Address}" FontSize="Small" />
+
+                                    <!-- Город -->
+                                    <Label Text="{Binding City.Name}" FontSize="Small" />
+                                </StackLayout>
+
+                                <!-- Обработчик нажатия -->
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnRestaurantTapped" CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+
+
+
+
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Нижняя панель навигации -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,*,*,*" BackgroundColor="LightGray" Padding="10">
+            <!--<ImageButton Source="home_icon.png" Grid.Column="0" Clicked="OnHomeClicked" />
+            <ImageButton Source="history_icon.png" Grid.Column="1" Clicked="OnHistoryClicked" />
+            <ImageButton Source="profile_icon.png" Grid.Column="2" Clicked="OnProfileClicked" />
+            <ImageButton Source="settings_icon.png" Grid.Column="3" Clicked="OnSettingsClicked" />-->
+        </Grid>
+    </Grid>
 
 </ContentPage>

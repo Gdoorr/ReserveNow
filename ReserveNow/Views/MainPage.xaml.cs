@@ -1,36 +1,105 @@
-﻿namespace ReserveNow
+﻿
+using System.Collections.ObjectModel;
+using ReserveNow.Models;
+using Microsoft.Maui.Controls;
+using System.Net.Http.Json;
+using ReserveNow.Views;
+
+namespace ReserveNow
 {
     public partial class MainPage : ContentPage
     {
         private readonly ApiService _apiService;
+        private readonly AuthService _authService;
+        public  HttpClient _httpClient;
+        private List<string> _cities = new();
+        private List<Restaurant> _restaurants = new();
+        public ObservableCollection<Restaurant> RecommendedRestaurants { get; set; }
+        public ObservableCollection<Booking> UpcomingBookings { get; set; }
 
-        public MainPage()
+        public MainPage(ApiService apiService, AuthService authService, HttpClient httpClient)
         {
             InitializeComponent();
-            _apiService = new ApiService(new HttpClient(), new AuthService(new HttpClient()));
-        }
+            _apiService = apiService;
+            _authService = authService;
+            //LoadUserData();
+            // Пример данных
 
-        private async void OnFetchDataClicked(object sender, EventArgs e)
+            UpcomingBookings = new ObservableCollection<Booking>
+            {
+                new Booking { RestaurantName = "Уютный дом", BookingDate = "20 октября, 19:00" }
+            };
+
+            BindingContext = this;
+            LoadData();
+            //LoadRestaurants();
+            _httpClient = httpClient;
+        }
+        private async void LoadData()
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://yourapi.com/data");
-                var response = await _apiService.SendRequestAsync(request);
+                //исправить здесь ошибка крашится при запуске
+                // Загрузка городов
+                _cities = await _apiService.GetCitiesAsync();
+                CityPicker.ItemsSource = _cities;
+                CityPicker.ItemDisplayBinding = new Binding(".");  // Отображаем название города
 
-                if (response.IsSuccessStatusCode)
+                // Установка города пользователя
+                var userProfile = _authService.GetUserProfile();
+                var userCity = userProfile.City;
+                if (!string.IsNullOrEmpty(userCity) && _cities.Contains(userCity))
                 {
-                    var data = await response.Content.ReadAsStringAsync();
-                    DataLabel.Text = $"Data: {data}";
+                    CityPicker.SelectedItem = userCity;
                 }
-                else
-                {
-                    DataLabel.Text = $"Error: {response.StatusCode}";
-                }
+
+                // Загрузка ресторанов
+                _restaurants = await _apiService.GetRestaurantsAsync();
+                UpdateRestaurantsList(userCity);
             }
             catch (Exception ex)
             {
-                DataLabel.Text = $"Exception: {ex.Message}";
+                await DisplayAlert("Error", ex.Message, "OK");
             }
+        }
+
+        private void UpdateRestaurantsList(string selectedCity)
+        {
+            var sortedRestaurants = _restaurants
+                .OrderByDescending(r => r.City == selectedCity) // Рестораны из выбранного города первыми
+                .ThenBy(r => r.Name) // Дополнительная сортировка по имени
+                .ToList();
+
+            RestaurantsList.ItemsSource = sortedRestaurants;
+        }
+
+        private void OnCitySelected(object sender, EventArgs e)
+        {
+            var selectedCity = CityPicker.SelectedItem as string;
+            UpdateRestaurantsList(selectedCity);
+        }
+        private async void OnRestaurantTapped(object sender, EventArgs e)
+        {
+            var tappedRestaurant = (sender as TapGestureRecognizer)?.CommandParameter as Restaurant;
+            if (tappedRestaurant != null)
+            {
+                await Navigation.PushAsync(new RestaurantPage(_apiService, _authService, tappedRestaurant));
+            }
+        }
+        private void OnSettingsClicked(object sender, EventArgs e)
+        {
+            // Ваш код здесь
+            DisplayAlert("Info", "Settings button clicked!", "OK");
+        }
+        private void OnHomeClicked(object sender, EventArgs e)
+        {
+            // Ваш код здесь
+            DisplayAlert("Info", "Settings button clicked!", "OK");
+        }
+        private void OnCancelBookingClicked(object sender, EventArgs e)
+        {
+            // Ваш код здесь
+            DisplayAlert("Info", "Settings button clicked!", "OK");
         }
     }
 
