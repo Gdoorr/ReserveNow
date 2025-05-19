@@ -6,18 +6,20 @@ namespace ReserveNow.Views;
 public partial class RegisterPage : ContentPage
 {
     private readonly HttpClient _httpClient;
+    private readonly string _baseUrl;
 
     public RegisterPage()
     {
         InitializeComponent();
         _httpClient = new HttpClient();
+        _baseUrl = MauiProgram.Configuration["ServerSettings:BaseUrl"];
         LoadCities();
     }
 
     private async void LoadCities()
     {
         // Загрузка списка городов с API (если есть)
-        var cities = await _httpClient.GetFromJsonAsync<List<City>>("http://localhost:5000/api/Registration/cities");
+        var cities = await _httpClient.GetFromJsonAsync<List<City>>($"{_baseUrl}/api/Registration/cities");
         foreach (var city in cities)
         {
             CityPicker.Items.Add(city.Name);
@@ -44,7 +46,7 @@ public partial class RegisterPage : ContentPage
 
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("http://localhost:5000/api/Registration/register", userDto);
+            var response = await _httpClient.PostAsJsonAsync($"{_baseUrl}/api/Registration/register", userDto);
 
             if (response.IsSuccessStatusCode)
             {

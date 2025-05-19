@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace ReserveNow.Models
 {
-    public class City
+    public class ApiResponse
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-
+        public string Message { get; set; }
     }
 }

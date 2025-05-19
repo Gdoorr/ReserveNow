@@ -18,5 +18,6 @@ namespace ReserveNow.Models
         public TimeSpan OpeningTime { get; set; }
         public TimeSpan ClosingTime { get; set; }
         public string City { get; set; }
+        public virtual ICollection<Table> Tables { get; set; } = new List<Table>();
     }
 }

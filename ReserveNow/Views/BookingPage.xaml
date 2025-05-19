@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ReserveNow.Controls"
+             x:Class="ReserveNow.Views.BookingPage"
+             Title="BookingPage">
+    <StackLayout Padding="20">
+        <DatePicker x:Name="DatePicker" />
+        <local:CustomTimePicker x:Name="StartTimePicker"
+                                Title="Select Start Time"
+                                SelectedIndexChanged="OnStartTimeChanged"/>
+
+        <!-- Кастомный TimePicker для конца времени -->
+        <local:CustomTimePicker x:Name="EndTimePicker"
+                                Title="Select End Time" 
+                                SelectedIndexChanged="OnEndTimeChanged"/>
+        <Entry x:Name="GuestsEntry" Placeholder="Number of guests" Keyboard="Numeric" />
+        <Button Text="Check Availability" Clicked="OnCheckAvailabilityClicked" />
+        <Label x:Name="ValidationMessage" TextColor="Red" />
+        <Label x:Name="AvailabilityStatus" IsVisible="False" />
+        <Button x:Name="ConfirmBookingButton" Text="Confirm Booking" IsVisible="False" Clicked="OnConfirmReservationClicked" />
+    </StackLayout>
+</ContentPage>

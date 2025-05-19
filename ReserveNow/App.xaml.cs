@@ -11,59 +11,60 @@ namespace ReserveNow
 {
     public partial class App : Application
     {
-        //private readonly ApiService _apiService;
-        //private readonly AuthService _authService;
+        private readonly ApiService _apiService;
+        private readonly AuthService _authService;
+        private readonly HttpClient _httpClient;
         public App(AuthService authService, ApiService apiService,HttpClient httpClient)
         {
             InitializeComponent();
+            _authService = authService;
+            _apiService = apiService;
+            _httpClient = httpClient;
+            var loginPage = new LoginPage(_apiService, _authService);
+            var mainPage = new MainPage(_apiService, _authService, _httpClient);
+            var (accessToken, refreshToken, expireAt) = _authService.GetSavedTokens();
+            var user = _authService.GetUserProfile();
 
-            // Устанавливаем временную стартовую страницу
-            MainPage = new NavigationPage(loginPage);
-
-
-            // Передаем сервисы в LoginPage
-            //MainPage = new NavigationPage(new LoginPage(apiService, authService));
-            InitializeAppAsync(authService, apiService,httpClient).GetAwaiter().GetResult();
-
-        }
-        private async Task InitializeAppAsync(AuthService authService, ApiService apiService,HttpClient httpClient)
-        {
-            var loginPage = new LoginPage(apiService, authService);
-            var mainPage = new MainPage(apiService, authService,httpClient);
-            var (accessToken, refreshToken) = authService.GetSavedTokens();
-            if (!string.IsNullOrEmpty(refreshToken))
+            if (expireAt<DateTime.UtcNow&&user!=null)
             {
-                try
-                {
-                    // Проверяем действительность refresh_token
-                    var newAccessToken = await authService.RefreshAccessTokenAsync(refreshToken);
-
-                    authService.SaveTokens(Convert.ToString(newAccessToken), refreshToken);
-                    var tokens = authService.GetSavedTokens();
-                    if (!string.IsNullOrEmpty(tokens.AccessToken) || !string.IsNullOrEmpty(tokens.RefreshToken))
-                    {
-                        MainPage = new NavigationPage(mainPage);
-                        return;
-                    }
-                    else
-                    {
-                        MainPage = new NavigationPage(loginPage);
-                        return;
-                    }
-                    // Переходим на главную страницу
-
-                }
-                catch
-                {
-                    // Если refresh_token недействителен, очищаем токены
-                    authService.ClearTokens();
-                    authService.ClearUserProfile();
-                    MainPage = new NavigationPage(loginPage);
+                    MainPage = new NavigationPage(mainPage);
                     return;
-                }
             }
-            MainPage = new NavigationPage(loginPage);
+            else
+            {
+                _authService.ClearTokens();
+                _authService.ClearUserProfile();
+                MainPage = new NavigationPage(loginPage);
+                return;
+            }
+            //if (!string.IsNullOrEmpty(refreshToken))
+            //{
+            //    // Проверяем, действителен ли refresh_token
+            //    try
+            //    {
+            //        // Проверяем действительность refresh_token
+            //        var newAccessToken = _authService.RefreshAccessTokenAsync(refreshToken);
+            //        _authService.SaveTokens(newAccessToken.Result, refreshToken, expireAt);
+
+            //        // Переходим на главную страницу
+
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        if (ex.Message.Contains("Refresh token expired"))
+            //        {
+            //            // Если refresh_token истек, очищаем токены и переходим на страницу входа
+            //            _authService.ClearTokens();
+            //            _authService.ClearUserProfile();
+            //        }
+            //    }
+            //}
+
+            //// Переходим на страницу входа
+            //MainPage = new NavigationPage(loginPage);
+
         }
+       
         //public App(ApiService apiService, AuthService authService)
         //{
         //    InitializeComponent();

@@ -14,16 +14,18 @@ namespace ReserveNow
     {
         public readonly HttpClient _httpClient;
         public readonly AuthService _authService;
+        private readonly string _baseUrl;
 
         public ApiService(HttpClient httpClient, AuthService authService)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _authService = authService;
+            _baseUrl = MauiProgram.Configuration["ServerSettings:BaseUrl"];
         }
 
         public async Task<T> MakeAuthorizedRequestAsync<T>(string url, HttpMethod method = null, object requestBody = null)
         {
-            var (accessToken, refreshToken) = _authService.GetSavedTokens();
+            var (accessToken, refreshToken,expireAt) = _authService.GetSavedTokens();
             if (string.IsNullOrEmpty(accessToken))
             {
                 throw new Exception("No access token found");
@@ -81,12 +83,12 @@ namespace ReserveNow
         }
         //public async Task<Client> FetchUserDataAsync()
         //{
-        //    var json = await MakeAuthorizedRequestAsync("http://10.0.2.2:5000/api/Registretion/data");
+        //    var json = await MakeAuthorizedRequestAsync("http://192.168.1.5:5000/api/Registretion/data");
         //    return JsonSerializer.Deserialize<Client>(json);
         //}
         public async Task<List<string>> GetCitiesAsync()
         {
-            var response = await _httpClient.GetAsync("http://10.0.2.2:5000/api/Registration/cities");
+            var response = await _httpClient.GetAsync($"{_baseUrl}/api/Registration/cities");
             if (response.IsSuccessStatusCode)
             {
                 var cityModels = await response.Content.ReadFromJsonAsync<List<City>>();
@@ -100,17 +102,38 @@ namespace ReserveNow
 
         public async Task<List<Restaurant>> GetRestaurantsAsync()
         {
-            return await MakeAuthorizedRequestAsync<List<Restaurant>>("http://10.0.2.2:5000/api/Restaurants/list");
+            return await MakeAuthorizedRequestAsync<List<Restaurant>>($"{_baseUrl}/api/Restaurants/list");
         }
         public async Task<Restaurant> GetRestaurantAsync(int id)
         {
-            return await MakeAuthorizedRequestAsync<Restaurant>($"https://your-api.com/api/restaurants/ {id}");
+            return await MakeAuthorizedRequestAsync<Restaurant>($"{_baseUrl}/api/Restaurants/{id}");
         }
-
-        public async Task<List<dynamic>> GetAvailableTablesAsync(int restaurantId, DateTime date, TimeSpan time)
+       public async Task<Table> GetAvailableTablesAsync(
+        int restaurantId,
+        DateTime date,
+        TimeSpan startTime,
+        TimeSpan endTime,
+        int guests)
         {
-            var url = $"https://your-api.com/api/restaurants/ {restaurantId}/tables?date={date:yyyy-MM-dd}&time={time:hh\\:mm}";
-            return await MakeAuthorizedRequestAsync<List<dynamic>>(url);
+            var url = $"{_baseUrl}/api/Restaurants/{restaurantId}/available-tables" +
+                      $"?date={date:yyyy-MM-dd}" +
+                      $"&startTime={startTime:hh\\:mm}" +
+                      $"&endTime={endTime:hh\\:mm}" +
+                      $"&guests={guests}";
+
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var availableTables = await response.Content.ReadFromJsonAsync<List<Table>>();
+
+                // Выбираем столик с минимальной вместимостью, но достаточной для размещения всех гостей
+                var bestTable = availableTables
+                    .OrderBy(t => t.Capacity) // Сортируем по вместимости
+                    .FirstOrDefault();       // Берем первый (минимальный)
+
+                return bestTable;
+            }
+            throw new Exception("Failed to load available tables");
         }
 
         public async Task ReserveTableAsync(int restaurantId, int tableId, DateTime date, TimeSpan time, int guests)
@@ -126,10 +149,11 @@ namespace ReserveNow
             };
 
             await MakeAuthorizedRequestAsync<object>(
-                "https://your-api.com/api/restaurants/reserve ",
+                $"{_baseUrl}/api/Restaurants/reserve ",
                 HttpMethod.Post,
                 reservationRequest
             );
         }
+        
     }
 }

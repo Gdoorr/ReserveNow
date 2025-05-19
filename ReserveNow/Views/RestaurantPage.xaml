@@ -5,22 +5,25 @@
              Title="RestaurantPage">
     <ScrollView>
         <StackLayout Padding="20">
+            <!-- Информация о ресторане -->
             <Label Text="{Binding Name}" FontSize="Large" />
             <Label Text="{Binding Address}" FontSize="Medium" />
-            <DatePicker x:Name="DatePicker" />
-            <TimePicker x:Name="TimePicker" />
-            <Button Text="Check Available Tables" Clicked="OnCheckTablesClicked" />
-            <CollectionView x:Name="TablesList" IsVisible="False">
+            <Label Text="{Binding Phone}" FontSize="Small" />
+            <Label Text="{Binding Description}" FontSize="Small" />
+
+            <!-- Список столов -->
+            <CollectionView x:Name="TablesList">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout>
                             <Label Text="{Binding Capacity, StringFormat='Capacity: {0}'}" />
-                            <Label Text="{Binding IsAvailable, StringFormat='Available: {0}'}" />
-                            <Button Text="Book Table" Clicked="OnBookTableClicked" />
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
+            <!-- Кнопка "Забронировать" -->
+            <Button Text="Book a Table" Clicked="OnBookClicked" />
         </StackLayout>
     </ScrollView>
 </ContentPage>

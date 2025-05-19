@@ -15,6 +15,7 @@ namespace ReserveNow
     {
         private readonly AuthService _authService;
         private readonly ApiService _apiService;
+        private readonly string _baseUrl;
         //private readonly HttpClient _httpClient;
 
         public LoginPage(ApiService apiService, AuthService authService)
@@ -22,6 +23,7 @@ namespace ReserveNow
             InitializeComponent();
             _authService = authService;
             _apiService = apiService;
+            _baseUrl = MauiProgram.Configuration["ServerSettings:BaseUrl"];
         }
 
         private async void OnLoginClicked(object sender, EventArgs e)

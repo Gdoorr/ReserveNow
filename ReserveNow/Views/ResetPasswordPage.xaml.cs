@@ -4,15 +4,17 @@ namespace ReserveNow.Views;
 public partial class ResetPasswordPage : ContentPage
 {
     private readonly HttpClient _httpClient = new();
+    private readonly string _baseUrl;
     public ResetPasswordPage()
 	{
         InitializeComponent();
+        _baseUrl = MauiProgram.Configuration["ServerSettings:BaseUrl"];
     }
     private async void OnSendCodeClicked(object sender, EventArgs e)
     {
         var email = EmailEntry.Text;
 
-        var response = await _httpClient.PostAsJsonAsync("http://localhost:5000/api/ResetPassword/forgot-password", new { Email = email });
+        var response = await _httpClient.PostAsJsonAsync($"{_baseUrl}/api/ResetPassword/forgot-password", new { Email = email });
 
         if (response.IsSuccessStatusCode)
         {
@@ -29,7 +31,7 @@ public partial class ResetPasswordPage : ContentPage
         var code = CodeEntry.Text;
         var newPassword = NewPasswordEntry.Text;
 
-        var response = await _httpClient.PostAsJsonAsync("http://localhost:5000/api/ResetPassword/reset-password", new
+        var response = await _httpClient.PostAsJsonAsync($"{_baseUrl}/api/ResetPassword/reset-password", new
         {
             Email = email,
             ResetCode = code,

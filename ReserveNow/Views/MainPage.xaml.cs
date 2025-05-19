@@ -9,29 +9,26 @@ namespace ReserveNow
 {
     public partial class MainPage : ContentPage
     {
+        private readonly string _baseUrl;
         private readonly ApiService _apiService;
         private readonly AuthService _authService;
         public  HttpClient _httpClient;
         private List<string> _cities = new();
         private List<Restaurant> _restaurants = new();
         public ObservableCollection<Restaurant> RecommendedRestaurants { get; set; }
-        public ObservableCollection<Booking> UpcomingBookings { get; set; }
 
         public MainPage(ApiService apiService, AuthService authService, HttpClient httpClient)
         {
             InitializeComponent();
             _apiService = apiService;
             _authService = authService;
+            _baseUrl = MauiProgram.Configuration["ServerSettings:BaseUrl"];
             //LoadUserData();
             // Пример данных
-
-            UpcomingBookings = new ObservableCollection<Booking>
-            {
-                new Booking { RestaurantName = "Уютный дом", BookingDate = "20 октября, 19:00" }
-            };
-
-            BindingContext = this;
+            NavigationPage.SetHasNavigationBar(this, false);
+           
             LoadData();
+            LoadReservations();
             //LoadRestaurants();
             _httpClient = httpClient;
         }
@@ -62,7 +59,64 @@ namespace ReserveNow
                 await DisplayAlert("Error", ex.Message, "OK");
             }
         }
+        private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+        {
+            var query = e.NewTextValue?.Trim();
 
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                // Если строка поиска пустая, показываем все рестораны
+                RestaurantsList.ItemsSource = _restaurants;
+            }
+            else
+            {
+                // Фильтруем рестораны по названию
+                var filtered = _restaurants
+                    .Where(r => r.Name.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+
+                RestaurantsList.ItemsSource = filtered;
+            }
+        }
+        private async void LoadReservations()
+        {
+            try
+            {
+                var user = _authService.GetUserProfile();
+                // Получаем список броней пользователя
+                var reservations = await _apiService.MakeAuthorizedRequestAsync<List<Reservation>>(
+                    $"{_baseUrl}/api/Restaurants/user/{user.ID}",
+                    HttpMethod.Get
+                );
+
+                if (reservations != null && reservations.Any())
+                {
+                    var displayReservations = reservations.Select(r => new Reservation
+                    {
+                        
+                        Date = DateTime.Parse(r.Date).ToString("yyyy-MM-dd"), // Форматируем дату
+                        StartTime = TimeSpan.Parse(r.StartTime).ToString(@"hh\:mm"),   // Убираем секунды
+                        EndTime = TimeSpan.Parse(r.EndTime).ToString(@"hh\:mm"),       // Убираем секунды
+                        Guests = r.Guests
+                    }).ToList();
+                    // Отображаем список броней
+                    ReservationsList.ItemsSource = displayReservations;
+                    ReservationsList.IsVisible = true;
+                    ReservationsLabel.IsVisible = true;
+
+                }
+                else
+                {
+                    // Показываем сообщение об отсутствии броней
+                    ReservationsList.IsVisible = false;
+                    ReservationsLabel.IsVisible = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to load reservations: {ex.Message}", "OK");
+            }
+        }
         private void UpdateRestaurantsList(string selectedCity)
         {
             var sortedRestaurants = _restaurants
@@ -78,12 +132,13 @@ namespace ReserveNow
             var selectedCity = CityPicker.SelectedItem as string;
             UpdateRestaurantsList(selectedCity);
         }
-        private async void OnRestaurantTapped(object sender, EventArgs e)
+        private async void OnRestaurantClicked(object sender, EventArgs e)
         {
-            var tappedRestaurant = (sender as TapGestureRecognizer)?.CommandParameter as Restaurant;
-            if (tappedRestaurant != null)
+            var restaurant = (sender as Button)?.BindingContext as Restaurant;
+            if (restaurant != null)
             {
-                await Navigation.PushAsync(new RestaurantPage(_apiService, _authService, tappedRestaurant));
+                var detailsPage = new RestaurantPage(_apiService,_authService, restaurant, _httpClient);
+                await Navigation.PushAsync(detailsPage);
             }
         }
         private void OnSettingsClicked(object sender, EventArgs e)

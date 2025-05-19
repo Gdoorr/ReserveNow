@@ -11,11 +11,12 @@ namespace ReserveNow.Models
         public int ID { get; set; }
         public int UserId { get; set; }
         public int RestaurantId { get; set; }
+        public string RestaurantName { get; set; } // Название ресторана
+        public string RestaurantCity { get; set; }
         public int TableId { get; set; }
-        public DateTime Date { get; set; }
-        public TimeSpan Time { get; set; }
+        public string Date { get; set; } // Дата в формате ISO 8601 (строка)
+        public string StartTime { get; set; } // Время в формате строки hh:mm:ss
+        public string EndTime { get; set; }   // Время в формате строки hh:mm:ss
         public int Guests { get; set; }
-        public string Status { get; set; } = "pending";
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
