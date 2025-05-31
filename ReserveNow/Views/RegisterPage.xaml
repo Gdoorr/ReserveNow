@@ -2,16 +2,124 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ReserveNow.Views.RegisterPage"
-             Title="RegisterPage">
-    <ScrollView>
-        <StackLayout Padding="20">
-            <Entry Placeholder="Name" x:Name="NameEntry" />
-            <Entry Placeholder="Email" x:Name="EmailEntry" Keyboard="Email" />
-            <Entry Placeholder="Phone" x:Name="PhoneEntry" Keyboard="Telephone" />
-            <Entry Placeholder="Password" x:Name="PasswordEntry" IsPassword="True" />
-            <Picker Title="Select City" x:Name="CityPicker" />
+             Title="Создание аккаунта">
+    <ScrollView BackgroundColor="{StaticResource BackgroundColor}">
+        <StackLayout Padding="20" Spacing="20">
+            <!-- Заголовок -->
+            
 
-            <Button Text="Register" Clicked="OnRegisterClicked" />
+            <!-- Карточка с формой -->
+            <Frame CornerRadius="15"
+               Padding="20"
+               BackgroundColor="White"
+               HasShadow="True"
+               BorderColor="#E0E0E0">
+                <StackLayout Spacing="15">
+                    <!-- Поле "Name" -->
+                    <Frame CornerRadius="10"
+                       Padding="10"
+                       BackgroundColor="{StaticResource BackgroundColor}"
+                       BorderColor="#E0E0E0">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Image Source="capacity_icon.png"
+                               WidthRequest="24"
+                               HeightRequest="24"
+                               VerticalOptions="Center"
+                               Margin="0,0,10,0" HorizontalOptions="Start"/>
+                            <Entry Placeholder="Имя"
+                               x:Name="NameEntry"
+                               TextColor="{StaticResource PrimaryTextColor}"
+                               PlaceholderColor="{StaticResource SecondaryTextColor}"
+                               BackgroundColor="Transparent"
+                               VerticalOptions="Center" Margin="25,0,0,0" MinimumWidthRequest="300"/>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Поле "Email" -->
+                    <Frame CornerRadius="10"
+                       Padding="10"
+                       BackgroundColor="{StaticResource BackgroundColor}"
+                       BorderColor="#E0E0E0">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Image Source="email_icon.png"
+                               WidthRequest="24"
+                               HeightRequest="24"
+                               VerticalOptions="Center"
+                               Margin="0,0,10,0" HorizontalOptions="Start"/>
+                            <Entry Placeholder="Почта"
+                               x:Name="EmailEntry"
+                               Keyboard="Email"
+                               TextColor="{StaticResource PrimaryTextColor}"
+                               PlaceholderColor="{StaticResource SecondaryTextColor}"
+                               BackgroundColor="Transparent"
+                               VerticalOptions="Center" Margin="25,0,0,0" MinimumWidthRequest="300"/>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Поле "Phone" -->
+                    <Frame CornerRadius="10"
+                       Padding="10"
+                       BackgroundColor="{StaticResource BackgroundColor}"
+                       BorderColor="#E0E0E0">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Image Source="phone_icon.png"
+                               WidthRequest="24"
+                               HeightRequest="24"
+                               VerticalOptions="Center"
+                               Margin="0,0,10,0" HorizontalOptions="Start"/>
+                            <Entry Placeholder="Телефон"
+                               x:Name="PhoneEntry"
+                               Keyboard="Telephone"
+                               TextColor="{StaticResource PrimaryTextColor}"
+                               PlaceholderColor="{StaticResource SecondaryTextColor}"
+                               BackgroundColor="Transparent"
+                               VerticalOptions="Center" Margin="25,0,0,0" MinimumWidthRequest="300"/>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Поле "Password" -->
+                    <Frame CornerRadius="10"
+                       Padding="10"
+                       BackgroundColor="{StaticResource BackgroundColor}"
+                       BorderColor="#E0E0E0">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Image Source="lock_icon.png"
+                               WidthRequest="24"
+                               HeightRequest="24"
+                               VerticalOptions="Center"
+                               Margin="0,0,10,0" HorizontalOptions="Start"/>
+                            <Entry Placeholder="Пароль"
+                               x:Name="PasswordEntry"
+                               IsPassword="True"
+                               TextColor="{StaticResource PrimaryTextColor}"
+                               PlaceholderColor="{StaticResource SecondaryTextColor}"
+                               BackgroundColor="Transparent"
+                               VerticalOptions="Center" Margin="25,0,0,0" MinimumWidthRequest="300"/>
+                        </Grid>
+                    </Frame>
+                    <Frame CornerRadius="10" Padding="10" BackgroundColor="{StaticResource BackgroundColor}" BorderColor="#E0E0E0">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Image Source="location_icon.png"
+           WidthRequest="24"
+           HeightRequest="24"
+           VerticalOptions="Center"
+           Margin="0,0,10,0" HorizontalOptions="Start"/>
+                            <Picker x:Name="CityPicker" Title="Город" TitleColor="{StaticResource SecondaryTextColor}" TextColor="{StaticResource PrimaryTextColor}" Margin="25,0,0,0" MinimumWidthRequest="300"/>
+                        </Grid>
+                    </Frame>
+                    <!-- Выбор города -->
+                    
+
+                    <!-- Кнопка регистрации -->
+                    <Button Text="Зарегистрировать"
+                        BackgroundColor="{StaticResource PrimaryButtonColor}"
+                        TextColor="{StaticResource SecondaryButtonColor}"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        HeightRequest="50"
+                        Clicked="OnRegisterClicked" />
+                </StackLayout>
+            </Frame>
         </StackLayout>
     </ScrollView>
 </ContentPage>

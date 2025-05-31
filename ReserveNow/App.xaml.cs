@@ -6,6 +6,7 @@ using Microsoft.Maui.Controls;
 using ReserveNow.Views;
 using Microsoft.Maui.LifecycleEvents;
 using System.Net.Http;
+using ReserveNow.Models;
 
 namespace ReserveNow
 {
@@ -14,14 +15,16 @@ namespace ReserveNow
         private readonly ApiService _apiService;
         private readonly AuthService _authService;
         private readonly HttpClient _httpClient;
-        public App(AuthService authService, ApiService apiService,HttpClient httpClient)
+        private readonly Reservation _reservation;
+        public App(AuthService authService, ApiService apiService,HttpClient httpClient, Reservation reservation)
         {
             InitializeComponent();
             _authService = authService;
             _apiService = apiService;
             _httpClient = httpClient;
-            var loginPage = new LoginPage(_apiService, _authService);
-            var mainPage = new MainPage(_apiService, _authService, _httpClient);
+            _reservation = reservation;
+            var loginPage = new LoginPage(_apiService, _authService, _reservation);
+            var mainPage = new MainPage(_apiService, _authService, _httpClient,_reservation);
             var (accessToken, refreshToken, expireAt) = _authService.GetSavedTokens();
             var user = _authService.GetUserProfile();
 
@@ -36,6 +39,7 @@ namespace ReserveNow
                 _authService.ClearUserProfile();
                 MainPage = new NavigationPage(loginPage);
                 return;
+
             }
             //if (!string.IsNullOrEmpty(refreshToken))
             //{

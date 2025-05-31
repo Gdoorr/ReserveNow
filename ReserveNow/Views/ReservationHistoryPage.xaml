@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ReserveNow.Views.ReservationHistoryPage"
+             Title="История">
+    <Grid>
+        <!-- Определение строк -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <!-- Основная область -->
+            <RowDefinition Height="60" />
+            <!-- Нижняя панель -->
+        </Grid.RowDefinitions>
+
+        <!-- Основная область для отображения страниц -->
+        <Frame Grid.Row="0" BackgroundColor="{StaticResource BackgroundColor}" Padding="20" HasShadow="False" CornerRadius="0">
+            <StackLayout Spacing="20">
+                <!-- Заголовок -->
+
+
+                <!-- Список броней -->
+                <CollectionView x:Name="ReservationsList" IsVisible="True">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Padding="15"
+                               Margin="0,0,0,10"
+                               BackgroundColor="White"
+                               CornerRadius="10"
+                               BorderColor="#E0E0E0"
+                               HasShadow="True">
+                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                                    <!-- Левая часть (основная информация) -->
+                                    <StackLayout Grid.Column="0" Spacing="8">
+                                        <Label Text="{Binding RestaurantName}"
+                                           FontSize="Medium"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource PrimaryTextColor}" />
+
+                                        <FlexLayout Direction="Row" AlignItems="Center" Margin="0,0,0,5">
+                                            <Image Source="location_icon.png" WidthRequest="12" HeightRequest="12" />
+                                            <Label Text="{Binding RestaurantCity}" FontSize="Small" TextColor="{StaticResource SecondaryTextColor}" />
+                                        </FlexLayout>
+
+                                        <FlexLayout Direction="Row" AlignItems="Center">
+                                            <Image Source="calendar_icon.png" WidthRequest="12" HeightRequest="12" Margin="0,0,1,0"/>
+                                            <Label Text="{Binding Date, StringFormat='Дата: {0}'}" FontSize="Small" TextColor="{StaticResource SecondaryTextColor}" />
+                                        </FlexLayout>
+                                    </StackLayout>
+
+                                    <!-- Правая часть (время и гости) -->
+                                    <StackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+                                        <FlexLayout Direction="Column" AlignItems="End">
+                                            <Label Text="{Binding StartTime, StringFormat='Начало: {0}'}" FontSize="Small" TextColor="{StaticResource SecondaryTextColor}" />
+                                            <Label Text="{Binding EndTime, StringFormat='Конец: {0}'}" FontSize="Small" TextColor="{StaticResource SecondaryTextColor}" />
+                                        </FlexLayout>
+
+                                        <BoxView HeightRequest="1" Color="#E0E0E0" Margin="0,0,0,0" />
+
+                                        <FlexLayout Direction="Row" AlignItems="Center">
+                                            <Image Source="capacity_icon.png" WidthRequest="12" HeightRequest="12" Margin="0,0,1,0"/>
+                                            <Label Text="{Binding Guests, StringFormat='{0} Гостей'}" FontSize="Small" TextColor="{StaticResource SecondaryTextColor}" />
+                                        </FlexLayout>
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Сообщение, если броней нет -->
+                <Label x:Name="NoReservationsLabel"
+                   Text="No reservations found."
+                   FontSize="Medium"
+                   FontAttributes="Italic"
+                   TextColor="#999999"
+                   IsVisible="False"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+            </StackLayout>
+        </Frame>
+
+        <!-- Нижняя панель навигации -->
+        <Grid Grid.Row="1" Background="{StaticResource CardBackgroundColor}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Кнопки -->
+            <Button Grid.Column="0"
+    ImageSource="history_icon.png"
+    BackgroundColor="{StaticResource CardBackgroundColor}"
+    TextColor="{StaticResource AccentColor}" 
+    Clicked="OnHistoryClicked"/>
+
+            <Button Grid.Column="1"
+    ImageSource="home_icon.png"
+    BackgroundColor="{StaticResource CardBackgroundColor}"
+    TextColor="{StaticResource AccentColor}" 
+    Clicked="OnHomeClicked"/>
+
+            <Button Grid.Column="2"
+    ImageSource="settings_icon.png"
+    BackgroundColor="{StaticResource CardBackgroundColor}"
+    TextColor="{StaticResource AccentColor}" 
+    Clicked="OnSettingsClicked"/>
+        </Grid>
+    </Grid>
+</ContentPage>

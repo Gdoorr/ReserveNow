@@ -2,7 +2,8 @@
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.IO;
-
+using ReserveNow.Models;
+using ReserveNow.Views;
 
 
 namespace ReserveNow;
@@ -13,13 +14,13 @@ public static class MauiProgram
 	public static MauiApp CreateMauiApp()
 	{
 		var builder = MauiApp.CreateBuilder();
-		builder
-			.UseMauiApp<App>()
-			.ConfigureFonts(fonts =>
-			{
-				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-			});
+        builder
+            .UseMauiApp<App>()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            });
 
         var assembly = typeof(MauiProgram).Assembly;
         var resourceName = "ReserveNow.appsettings.json"; // Укажите полное имя ресурса
@@ -42,7 +43,11 @@ public static class MauiProgram
         // Регистрация сервисов
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<ApiService>();
+        builder.Services.AddSingleton<Reservation>();
         builder.Services.AddSingleton<MainPage>();
+        builder.Services.AddTransient<ReservationHistoryPage>();
+        builder.Services.AddTransient<ReservationHistoryPage>();
+        builder.Services.AddTransient<AccountSettingsPage>();
         builder.Logging.AddDebug();
 #endif
 

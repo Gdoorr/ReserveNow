@@ -8,7 +8,43 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+                <ResourceDictionary>
+                    <!-- Цвета фона -->
+                    <Color x:Key="BackgroundColor">#F5F5F5</Color>
+                    <!-- Светло-серый -->
+                    <Color x:Key="DopBackgroundColor">#D7B899</Color>
+                    <Color x:Key="CardBackgroundColor">#FFFFFF</Color>
+                    <!-- Белый -->
+
+                    <!-- Цвета текста -->
+                    <Color x:Key="PrimaryTextColor">#333333</Color>
+                    <!-- Темно-серый -->
+                    <Color x:Key="SecondaryTextColor">#666666</Color>
+                    <!-- Серый -->
+
+                    <!-- Цвета кнопок -->
+                    <Color x:Key="PrimaryButtonColor">#FF6F61</Color>
+                    <!-- Оранжевый -->
+                    <Color x:Key="SecondaryButtonColor">#ffffff</Color>
+                    <!-- Темно-синий -->
+
+                    <!-- Акцентные цвета -->
+                    <Color x:Key="AccentColor">#FFD700</Color>
+                    <!-- Золотой -->
+                    <Style TargetType="Frame">
+                        <Setter Property="BackgroundColor" Value="{StaticResource CardBackgroundColor}" />
+                        <Setter Property="BorderColor" Value="#E0E0E0" />
+                        <Setter Property="CornerRadius" Value="10" />
+                    </Style>
+
+                    <Style TargetType="Button">
+                        <Setter Property="TextColor" Value="White" />
+                        <Setter Property="CornerRadius" Value="5" />
+                        <Setter Property="Padding" Value="10,5" />
+                    </Style>
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
+        
     </Application.Resources>
 </Application>

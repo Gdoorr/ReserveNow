@@ -1,175 +1,225 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ReserveNow.MainPage"
-             Shell.NavBarIsVisible="False">
+             x:Class="ReserveNow.Views.MainPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource BackgroundColor}">
 
-    <Grid RowDefinitions="Auto,*,Auto">
-        <Grid Grid.Row="0" Padding="20" BackgroundColor="#FFFFFF">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <!-- Поле поиска -->
-                <ColumnDefinition Width="*" />
-                <!-- Пустое пространство -->
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
 
-            <!-- Поле поиска -->
-            <Entry Placeholder="Search restaurants..."
-                   TextChanged="OnSearchTextChanged"
-           BackgroundColor="#FFFFFF"
-           TextColor="#333333"
-           PlaceholderColor="#AAAAAA"
-           HeightRequest="40"
-           WidthRequest="150"
-           Margin="0,0,10,0"
-           Grid.Column="0"
-           HorizontalOptions="FillAndExpand" />
+    <Grid BackgroundColor="{StaticResource BackgroundColor}">
+        <!-- Определение строк -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <!-- Основная область -->
+            <RowDefinition Height="60" />
+            <!-- Нижняя панель -->
+        </Grid.RowDefinitions>
 
-            <!-- Выбор города -->
-            <Picker x:Name="CityPicker"
-                Title="Select City"
-            ItemsSource="{Binding Cities}"
-            SelectedItem="{Binding SelectedCity}"
-            BackgroundColor="#FFFFFF"
-            TextColor="#333333"
-            TitleColor="#AAAAAA"
-            HeightRequest="40"
-            Grid.Column="1"
-            HorizontalOptions="End" />
-        </Grid>
+        <!-- Основная область -->
+        <Frame Grid.Row="0" BackgroundColor="Transparent" Padding="0" HasShadow="False" CornerRadius="0">
+            <Grid RowDefinitions="Auto,*,Auto">
+                <!-- Верхняя панель (поиск и выбор города) -->
+                <Frame Grid.Row="0" Padding="0"  BackgroundColor="#F4E9D8" CornerRadius="0">
+                    <Frame.Shadow>
+                        <Shadow Brush="Black" Offset="0,1" Opacity="0.2" />
+                    </Frame.Shadow>
+                        <Grid Grid.Row="0" Padding="20" BackgroundColor="{StaticResource BackgroundColor}" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <!-- Поле поиска -->
+                            <ColumnDefinition Width="*" />
+                            <!-- Пустое пространство -->
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-        <!-- Центральная часть -->
-        <ScrollView Grid.Row="1" Padding="10">
-            <StackLayout Spacing="10">
-                <!-- Блок "Ближайшие бронирования" -->
-                <Label x:Name="ReservationsLabel" Text="Ближайшие бронирования" FontSize="25" FontAttributes="Bold" IsVisible="False"/>
-                <CollectionView x:Name="ReservationsList" IsVisible="False">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Frame CornerRadius="10"
-                           Padding="15"
-                           Margin="0,0,0,10"
-                           BackgroundColor="White"
-                           BorderColor="#E0E0E0">
-                                <StackLayout>
-                                    <StackLayout Orientation="Horizontal" Spacing="10">
-                                        <Image Source="restaurant_icon.png"
-                               WidthRequest="20"
-                               HeightRequest="20"
-                               VerticalOptions="Center" />
-                                        <Label Text="{Binding RestaurantName}"
-                               FontSize="Medium"
+                        <!-- Поле поиска -->
+                        <Border Grid.Column="0" BackgroundColor="#e1e1e1" HeightRequest="30">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10" />
+                            </Border.StrokeShape>
+                            <Entry Placeholder="Поиск..."
+                               x:Name="SearchEntry"
+                               BackgroundColor="{StaticResource CardBackgroundColor}"
+                               TextColor="{StaticResource PrimaryTextColor}"
+                               PlaceholderColor="{StaticResource SecondaryTextColor}"
+                               HeightRequest="40"
+                               WidthRequest="100"
+                               HorizontalTextAlignment="Center"
+                               TextChanged="OnSearchTextChanged"
+                               />  
+                        </Border>
+
+                        <Border Grid.Column="2" HeightRequest="30">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10" />
+                            </Border.StrokeShape>
+                            <Picker Title="Город..."
+                                x:Name="CityPicker"
+                                BackgroundColor="{StaticResource CardBackgroundColor}"
+                                TextColor="{StaticResource PrimaryTextColor}"
+                                TitleColor="{StaticResource SecondaryTextColor}"
+                                HeightRequest="40"
+                                HorizontalOptions="End"
+                                    HorizontalTextAlignment="Center"
+                                SelectedIndexChanged="OnCitySelected"
+                                    MinimumWidthRequest="100"
+                                    MaximumWidthRequest="300"
+                               
+                                 />
+                        </Border>
+                        <!-- Выбор города -->
+                    
+                        </Grid>
+                </Frame>
+                <!-- Центральная часть -->
+                <ScrollView Grid.Row="1" Padding="10">
+                    <StackLayout Spacing="10">
+                        <!-- Ближайшие бронирования -->
+                        <Label Text="Ближайшие бронирования"
+                               x:Name="ReservationsLabel"
+                               FontSize="25"
                                FontAttributes="Bold"
-                               TextColor="#333333" />
-                                    </StackLayout>
+                               TextColor="{StaticResource PrimaryTextColor}"
+                               HorizontalOptions="Center" />
 
-                                    <!-- Город ресторана -->
-                                    <Label Text="{Binding RestaurantCity}"
-                           FontSize="Small"
-                           TextColor="#666666" />
-                                    <!-- Дата -->
-                                    <Label Text="{Binding Date, StringFormat='{0:yyyy-MM-dd}'}"
+                        <CollectionView x:Name="ReservationsList" IsVisible="False">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame Style="{StaticResource FrameStyle}" Margin="0,0,0,10">
+                                        <Grid ColumnDefinitions="*,Auto,Auto">
+                                            <!-- Информация о брони -->
+                                            <StackLayout Grid.Column="0" Spacing="8">
+                                                <Label Text="{Binding RestaurantName}"
+                                                FontSize="Medium"
+                                                FontAttributes="Bold"
+                                                TextColor="{StaticResource SecondaryTextColor}"/>
+                                                <FlexLayout Direction="Row" AlignItems="Center" >
+                                                    <Label Text="Город:" FontSize="Small" TextColor="#666666" />
+                                                    <Label Text="{Binding RestaurantCity}" FontSize="Small" TextColor="#666666" Margin="5,0,0,0" />
+                                                </FlexLayout>
+                                                <FlexLayout Direction="Row" AlignItems="Center">
+                                                    <Label Text="Дата: " FontSize="Small" TextColor="#666666" />
+                                                    <Label Text="{Binding Date, StringFormat='{0:yyyy-MM-dd}'}" FontSize="Small" TextColor="#666666" />
+                                                </FlexLayout>
+                                                <FlexLayout Direction="Row" AlignItems="Center">
+                                                    <Label Text="Начало: " FontSize="Small" TextColor="#666666" />
+                                                    <Label Text="{Binding StartTime, StringFormat='{0:hh\\:mm\\:ss}'}" FontSize="Small" TextColor="{StaticResource SecondaryTextColor}" />
+                                                </FlexLayout>
+                                                <FlexLayout Direction="Row" AlignItems="Center">
+                                                    <Label Text="Конец: " FontSize="Small" TextColor="#666666" />
+                                                    <Label Text="{Binding EndTime, StringFormat='{0:hh\\:mm\\:ss}'}" FontSize="Small" TextColor="{StaticResource SecondaryTextColor}"/>
+                                                </FlexLayout>
+                                                <FlexLayout Direction="Row" AlignItems="Center">
+                                                    <Label Text="Гости: " FontSize="Small" TextColor="#666666" />
+                                                    <Label Text="{Binding Guests, StringFormat='{0}'}" FontSize="Small" TextColor="{StaticResource SecondaryTextColor}"/>
+                                                </FlexLayout>
+                                            </StackLayout>
+                                            <!-- Кнопки -->
+                                            <Button 
+                                                    BackgroundColor="Transparent"
+                                                    ImageSource="edit_icon.png"
+                                                    Style="{StaticResource ButtonStyle}"
+                                                    Grid.Column="1" 
+                                                    Clicked="OnEditReservationClicked"
+                                                WidthRequest="60"
+                                                HeightRequest="60"/>
+
+                                            <Button 
+                                                    BackgroundColor="Transparent"
+                                                    ImageSource="delete_icon.png"
+                                                    Style="{StaticResource ButtonStyle}"
+                                                    Grid.Column="2" 
+                                                    Clicked="OnDeleteReservationClicked"
+                                                WidthRequest="60"
+                                                HeightRequest="60"/>
+                                                
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <!-- Рекомендуемые заведения -->
+                        <Label Text="Список заведений"
+                               FontSize="25"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource PrimaryTextColor}"
+                               HorizontalTextAlignment="Center" />
+
+                        <CollectionView x:Name="RestaurantsList">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame Style="{StaticResource FrameStyle}" CornerRadius="10"
+                       Padding="0"
+                       BackgroundColor="White"
+                       BorderColor="#E0E0E0"
+                       Margin="0,0,0,10">
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <!-- Фото -->
+                                            <Image Source="{Binding ImageUrl}"
+                                                   WidthRequest="120"
+                                                   HeightRequest="120"
+                                                   Aspect="AspectFill"
+                                                   Grid.Column="0" Margin="0,0,10,0"/>
+
+                                            <!-- Информация -->
+                                            <StackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
+                                                <Label Text="{Binding Name}"
                                    FontSize="Medium"
                                    FontAttributes="Bold"
-                                   TextColor="#333333" />
+                                   TextColor="#333333"
+                                   LineBreakMode="TailTruncation" />
+                                                <Label Text="{Binding City}"
+                                   FontSize="Small"
+                                   TextColor="#666666" />
+                                                <Label Text="{Binding Address}"
+                                   FontSize="Small"
+                                   TextColor="#666666"
+                                   LineBreakMode="TailTruncation" />
+                                            </StackLayout>
 
-                                    <!-- Время -->
-                                    <StackLayout Orientation="Horizontal" Spacing="10">
-                                        <Image Source="clock_icon.png"
-                                       WidthRequest="20"
-                                       HeightRequest="20"
-                                       VerticalOptions="Center" />
-                                        <Label Text="{Binding StartTime, StringFormat='Start: {0}'}"
-                                       FontSize="Small"
-                                       TextColor="#666666" />
-                                        <Label Text="{Binding EndTime, StringFormat='End: {0}'}"
-                                       FontSize="Small"
-                                       TextColor="#666666" />
-                                    </StackLayout>
-
-                                    <!-- Количество гостей -->
-                                    <StackLayout Orientation="Horizontal" Spacing="10">
-                                        <Image Source="guests_icon.png"
-                                       WidthRequest="20"
-                                       HeightRequest="20"
-                                       VerticalOptions="Center" />
-                                        <Label Text="{Binding Guests, StringFormat='Guests: {0}'}"
-                                       FontSize="Small"
-                                       TextColor="#666666" />
-                                    </StackLayout>
-                                </StackLayout>
-                            </Frame>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-                <!-- Блок "Рекомендуемые заведения" -->
-                <Label Text="Рекомендуемые заведения" FontSize="25" FontAttributes="Bold" />
-                <CollectionView Grid.Row="1" x:Name="RestaurantsList" Margin="20,0">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Frame CornerRadius="10"
-                           Padding="10"
-                           BackgroundColor="White"
-                           BorderColor="#E0E0E0"
-                           Margin="0,0,0,10">
-                                <!-- Горизонтальный контейнер -->
-                                <Grid ColumnDefinitions="Auto,*,Auto" RowSpacing="10">
-                                    <!-- Фото -->
-                                    <Image Source="{Binding ImageUrl}"
-                                   WidthRequest="120"
-                                   HeightRequest="120"
-                                   Aspect="AspectFill"
-                                   
-                                   Grid.Column="0"
-                                   Margin="0,0,10,0" />
-
-                                    <!-- Блок с информацией -->
-                                    <StackLayout Grid.Column="1" Spacing="5">
-                                        <Label Text="{Binding Name}"
-                                       FontSize="Medium"
-                                       FontAttributes="Bold"
-                                       TextColor="#333333"
-                                       LineBreakMode="TailTruncation" />
-                                        <Label Text="{Binding City}"
-                                       FontSize="Small"
-                                       TextColor="#666666" />
-                                        <Label Text="{Binding Address}"
-                                       FontSize="Small"
-                                       TextColor="#666666"
-                                       LineBreakMode="TailTruncation" />
-                                    </StackLayout>
-
-                                    <!-- Кнопка для бронирования -->
-                                    <Button Text="Book Now"
-                                    BackgroundColor="#FF6F61"
-                                    TextColor="White"
-                                    CornerRadius="20"
-                                    WidthRequest="100"
-                                    HeightRequest="40"
-                                    Clicked="OnRestaurantClicked"
-                                    Grid.Column="2"
-                                    VerticalOptions="Center" />
-                                </Grid>
-                            </Frame>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-
-
-
-
-
-            </StackLayout>
-        </ScrollView>
-
+                                            <!-- Кнопка "Book Now" -->
+                                            <Button BackgroundColor="Transparent" ImageSource="forward_icon.png" CornerRadius="20" WidthRequest="80" HeightRequest="60" Grid.Column="2" Clicked="OnRestaurantClicked"/>
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </ScrollView>
+            </Grid>
+        </Frame>
+        <Frame Grid.Row="2" Padding="0" HasShadow="True"  CornerRadius="0">
+            <Frame.Shadow>
+                <Shadow Brush="Black" Offset="0,-4" Opacity="0.2" />
+            </Frame.Shadow>
         <!-- Нижняя панель навигации -->
-        <Grid Grid.Row="2" ColumnDefinitions="*,*,*,*" BackgroundColor="LightGray" Padding="10">
-            <!--<ImageButton Source="home_icon.png" Grid.Column="0" Clicked="OnHomeClicked" />
-            <ImageButton Source="history_icon.png" Grid.Column="1" Clicked="OnHistoryClicked" />
-            <ImageButton Source="profile_icon.png" Grid.Column="2" Clicked="OnProfileClicked" />
-            <ImageButton Source="settings_icon.png" Grid.Column="3" Clicked="OnSettingsClicked" />-->
-        </Grid>
-    </Grid>
+            <Grid Grid.Row="1" Background="{StaticResource CardBackgroundColor}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
+                <!-- Кнопки -->
+                <Button Grid.Column="0"
+                        ImageSource="history_icon.png"
+                        BackgroundColor="{StaticResource CardBackgroundColor}"
+                        TextColor="{StaticResource AccentColor}" 
+                        Clicked="OnHistoryClicked"/>
+
+                <Button Grid.Column="1"
+                        ImageSource="home_icon.png"
+                        BackgroundColor="{StaticResource CardBackgroundColor}"
+                        TextColor="{StaticResource AccentColor}" 
+                        Clicked="OnHomeClicked"/>
+
+                <Button Grid.Column="2"
+                        ImageSource="settings_icon.png"
+                        BackgroundColor="{StaticResource CardBackgroundColor}"
+                        TextColor="{StaticResource AccentColor}" 
+                        Clicked="OnSettingsClicked"/>
+            </Grid>
+        </Frame>
+    </Grid>
 </ContentPage>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ReserveNow.Controls"
+             x:Class="ReserveNow.Views.EditReservation"
+             Title="Изменение брони">
+    
+    <Grid>
+        <!-- Определение строк -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <!-- Основная область -->
+            <RowDefinition Height="60" />
+            <!-- Нижняя панель -->
+        </Grid.RowDefinitions>
+
+        <!-- Основная область для отображения страниц -->
+        <Frame Grid.Row="0"
+           BackgroundColor="{StaticResource BackgroundColor}"
+           Padding="20"
+           HasShadow="False"
+           CornerRadius="0">
+            <StackLayout Spacing="20">
+                <!-- Карточка для выбора даты -->
+                <Frame Style="{StaticResource CardStyle}" Padding="15" CornerRadius="10">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Image Source="calendar_icon.png"
+               WidthRequest="30"
+               HeightRequest="30"
+               VerticalOptions="Center" />
+                        <DatePicker x:Name="DatePicker"
+                    Grid.Column="1"
+                    Format="yyyy-MM-dd"
+                    TextColor="{StaticResource PrimaryTextColor}"
+                    BackgroundColor="Transparent"
+                    FontSize="Medium"
+                    VerticalOptions="Center" />
+                    </Grid>
+                </Frame>
+
+                <!-- Карточка для выбора начального времени -->
+                <Frame Style="{StaticResource CardStyle}" Padding="15" CornerRadius="10">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Image Source="clock_icon.png"
+               WidthRequest="30"
+               HeightRequest="30"
+               VerticalOptions="Center" />
+                        <local:CustomTimePicker x:Name="StartTimePicker"
+                                Title="Выберите время начала"
+                                SelectedIndexChanged="OnStartTimeChanged"
+                                Grid.Column="1"
+                                TextColor="{StaticResource PrimaryTextColor}"
+                                BackgroundColor="Transparent"
+                                FontSize="Medium"
+                                VerticalOptions="Center" />
+                    </Grid>
+                </Frame>
+
+                <!-- Карточка для выбора конечного времени -->
+                <Frame Style="{StaticResource CardStyle}" Padding="15" CornerRadius="10">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Image Source="clock_icon.png"
+               WidthRequest="30"
+               HeightRequest="30"
+               VerticalOptions="Center" />
+                        <local:CustomTimePicker x:Name="EndTimePicker"
+                                Title="Выберите время окончания"
+                                SelectedIndexChanged="OnEndTimeChanged"
+                                Grid.Column="1"
+                                TextColor="{StaticResource PrimaryTextColor}"
+                                BackgroundColor="Transparent"
+                                FontSize="Medium"
+                                VerticalOptions="Center" />
+                    </Grid>
+                </Frame>
+
+                <!-- Карточка для количества гостей -->
+                <Frame Style="{StaticResource CardStyle}" Padding="15" CornerRadius="10">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Image Source="capacity_icon.png"
+               WidthRequest="30"
+               HeightRequest="30"
+               VerticalOptions="Center" />
+                        <Entry x:Name="GuestsEntry"
+               Placeholder="Количество гостей"
+               Keyboard="Numeric"
+               Grid.Column="1"
+               TextColor="{StaticResource PrimaryTextColor}"
+               PlaceholderColor="{StaticResource SecondaryTextColor}"
+               BackgroundColor="Transparent"
+               FontSize="Medium"
+               VerticalOptions="Center" />
+                    </Grid>
+                </Frame>
+
+                <!-- Кнопка "Save Changes" -->
+                <Button Text="Сохранить изменения"
+        BackgroundColor="{StaticResource PrimaryTextColor}"
+        TextColor="White"
+        CornerRadius="20"
+        HeightRequest="50"
+        FontSize="Medium"
+        Clicked="OnSaveChangesClicked" />
+            </StackLayout>
+        </Frame>
+
+        <!-- Нижняя панель навигации -->
+        <Grid Grid.Row="1" Background="{StaticResource CardBackgroundColor}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Кнопки -->
+            <Button Grid.Column="0"
+        ImageSource="history_icon.png"
+        BackgroundColor="{StaticResource CardBackgroundColor}"
+        TextColor="{StaticResource AccentColor}" 
+        Clicked="OnHistoryClicked"/>
+
+            <Button Grid.Column="1"
+        ImageSource="home_icon.png"
+        BackgroundColor="{StaticResource CardBackgroundColor}"
+        TextColor="{StaticResource AccentColor}" 
+        Clicked="OnHomeClicked"/>
+
+            <Button Grid.Column="2"
+        ImageSource="settings_icon.png"
+        BackgroundColor="{StaticResource CardBackgroundColor}"
+        TextColor="{StaticResource AccentColor}" 
+        Clicked="OnSettingsClicked"/>
+        </Grid>
+    </Grid>
+</ContentPage>

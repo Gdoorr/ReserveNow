@@ -2,28 +2,107 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ReserveNow.Views.RestaurantPage"
-             Title="RestaurantPage">
-    <ScrollView>
-        <StackLayout Padding="20">
-            <!-- Информация о ресторане -->
-            <Label Text="{Binding Name}" FontSize="Large" />
-            <Label Text="{Binding Address}" FontSize="Medium" />
-            <Label Text="{Binding Phone}" FontSize="Small" />
-            <Label Text="{Binding Description}" FontSize="Small" />
+             Shell.NavBarHasShadow="True"
+             Title="Страница ресторана" 
+             BackgroundColor="{StaticResource BackgroundColor}">
+    
+    <Grid>
+        <!-- Определение строк -->
+        <Grid.RowDefinitions BackgroundColor="{StaticResource BackgroundColor}">
+            <RowDefinition Height="*" />
+            <!-- Основная область -->
+            <RowDefinition Height="60" />
+            <!-- Нижняя панель -->
+        </Grid.RowDefinitions>
 
-            <!-- Список столов -->
-            <CollectionView x:Name="TablesList">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout>
-                            <Label Text="{Binding Capacity, StringFormat='Capacity: {0}'}" />
+        <!-- Основная область для отображения страниц -->
+        <Frame Grid.Row="0" BackgroundColor="{StaticResource BackgroundColor}" Padding="0" HasShadow="False" CornerRadius="0" >
+            <ScrollView>
+                <StackLayout Padding="20" Spacing="10" >
+                    <!-- Информация о ресторане -->
+                    
+                    
+                    <Border>
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="15" />
+                            </Border.StrokeShape>
+                            <Image Source="{Binding ImageUrl}" Aspect="AspectFill" HeightRequest="230" />
+                    </Border>
+                    <!-- Информация о ресторане -->
+                    <Frame CornerRadius="15" Padding="15" BackgroundColor="{StaticResource CardBackgroundColor}" HasShadow="True">
+                        <StackLayout Spacing="10">
+                            <Label Text="{Binding Name}" FontSize="Large" FontAttributes="Bold" TextColor="{StaticResource PrimaryTextColor}" />
+                            <FlexLayout Direction="Row" AlignItems="Center">
+                                <Image Source="location_icon.png" WidthRequest="20" HeightRequest="20" Margin="0,2,2,0"/>
+                                <Label Text="{Binding Address}" FontSize="Medium" TextColor="{StaticResource SecondaryTextColor}" />
+                            </FlexLayout>
+                            <FlexLayout Direction="Row" AlignItems="Center">
+                                <Image Source="phone_icon.png" WidthRequest="20" HeightRequest="20" Margin="0,1,2,0"/>
+                                <Label Text="{Binding Phone}" FontSize="Small" TextColor="{StaticResource SecondaryTextColor}" />
+                            </FlexLayout>
+                            <FlexLayout Direction="Row" AlignItems="Center">
+                                <Image Source="clock_icon.png" WidthRequest="20" HeightRequest="20" Margin="0,0,2,0"/>
+                                <Label Text="{Binding OpeningTime, StringFormat='Время работы: {0:hh\\:mm}'}" FontSize="Small" TextColor="{StaticResource SecondaryTextColor}" />
+                                <Label Text=" - " FontSize="Small" TextColor="{StaticResource SecondaryTextColor}" />
+                                <Label Text="{Binding ClosingTime, StringFormat='{0:hh\\:mm}'}" FontSize="Small" TextColor="{StaticResource SecondaryTextColor}" />
+                            </FlexLayout>
+                            <FlexLayout Direction="Row" AlignItems="Center">
+                                <Image Source="capacity_icon.png" WidthRequest="20" HeightRequest="20" Margin="0,0,2,0"/>
+                                <Label Text="{Binding Capacity, StringFormat='Вместимость: {0}'}" FontSize="Small" TextColor="{StaticResource SecondaryTextColor}" />
+                            </FlexLayout>
+                            <Label Text="{Binding Description}" FontSize="Small" TextColor="{StaticResource SecondaryTextColor}" LineBreakMode="WordWrap" MaxLines="3" />
                         </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                    </Frame>
 
-            <!-- Кнопка "Забронировать" -->
-            <Button Text="Book a Table" Clicked="OnBookClicked" />
-        </StackLayout>
-    </ScrollView>
+                    <!-- Список столов -->
+                    
+
+                    <!-- Кнопка "Забронировать" -->
+                    <Button Text="Забронировать"
+        BackgroundColor="{StaticResource PrimaryButtonColor}"
+        TextColor="{StaticResource CardBackgroundColor}"
+        CornerRadius="15"
+        FontSize="Medium"
+        WidthRequest="200"
+        HeightRequest="50"
+        HorizontalOptions="Center"
+        Clicked="OnBookClicked"/>
+                </StackLayout>
+            </ScrollView>
+        </Frame>
+
+        <!-- Нижняя панель навигации -->
+        <Frame Grid.Row="2" Padding="0" HasShadow="True" BackgroundColor="{StaticResource SecondaryButtonColor}" CornerRadius="0">
+            <Frame.Shadow>
+                <Shadow Brush="Black" Offset="0,-4" Opacity="0.2" />
+            </Frame.Shadow>
+            <!-- Нижняя панель навигации -->
+            <Grid Grid.Row="1" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Кнопки -->
+                <Button Grid.Column="0"
+             ImageSource="history_icon.png"
+             BackgroundColor="{StaticResource CardBackgroundColor}"
+             TextColor="{StaticResource AccentColor}" 
+             Clicked="OnHistoryClicked"/>
+
+                <Button Grid.Column="1"
+             ImageSource="home_icon.png"
+             BackgroundColor="{StaticResource CardBackgroundColor}"
+             TextColor="{StaticResource AccentColor}" 
+             Clicked="OnHomeClicked"/>
+
+                <Button Grid.Column="2"
+             ImageSource="settings_icon.png"
+             BackgroundColor="{StaticResource CardBackgroundColor}"
+             TextColor="{StaticResource AccentColor}" 
+             Clicked="OnSettingsClicked"/>
+            </Grid>
+        </Frame>
+    </Grid>
 </ContentPage>

@@ -7,12 +7,13 @@ public partial class BookingPage : ContentPage
     private readonly ApiService _apiService;
     private readonly Restaurant _restaurant;
     private readonly AuthService _authService;
+    private readonly Reservation _reservation;
     private readonly HttpClient _httpClient;
     private Table _selectedTable;
     private readonly string _baseUrl;
-    public BookingPage(ApiService apiService, Restaurant restaurant, AuthService authService,HttpClient httpClient)
-	{
-		InitializeComponent();
+    public BookingPage(ApiService apiService, Restaurant restaurant, AuthService authService,HttpClient httpClient, Reservation reservation)
+    {
+        InitializeComponent();
 
         _apiService = apiService;
         _restaurant = restaurant;
@@ -20,6 +21,7 @@ public partial class BookingPage : ContentPage
         _httpClient = httpClient;
         _baseUrl = MauiProgram.Configuration["ServerSettings:BaseUrl"];
         LoadRestaurantDetails();
+        _reservation = reservation;
     }
     private async void LoadRestaurantDetails()
     {
@@ -53,7 +55,7 @@ public partial class BookingPage : ContentPage
 
             if (string.IsNullOrEmpty(startTimeString) || string.IsNullOrEmpty(endTimeString))
             {
-                await DisplayAlert("Error", "Please select both start and end times.", "OK");
+                await DisplayAlert("Ошибка", "Пожалуйста, выберите время начала и окончания.", "Ок");
                 return;
             }
 
@@ -68,7 +70,7 @@ public partial class BookingPage : ContentPage
             if (availableTables == null)
             {
                 // Нет доступных столов
-                AvailabilityStatus.Text = "No available tables for this time range.";
+                AvailabilityStatus.Text = "Нет свободных столов на данный промежуток времени.";
                 AvailabilityStatus.TextColor = Colors.Red;
                 AvailabilityStatus.IsVisible = true;
                 ConfirmBookingButton.IsVisible = false; // Скрываем кнопку подтверждения
@@ -77,7 +79,7 @@ public partial class BookingPage : ContentPage
             {
                 // Найден доступный столик
                 _selectedTable = availableTables;
-                AvailabilityStatus.Text = $"Available table found: {_selectedTable.Capacity} seats.";
+                AvailabilityStatus.Text = $"Найдены свободные столики: {_selectedTable.Capacity} .";
                 AvailabilityStatus.TextColor = Colors.Green;
                 AvailabilityStatus.IsVisible = true;
                 ConfirmBookingButton.IsVisible = true; // Показываем кнопку подтверждения
@@ -88,38 +90,62 @@ public partial class BookingPage : ContentPage
             await DisplayAlert("Error", ex.Message, "OK");
         }
     }
+    //private void OnConfirmChangesClicked(object sender, EventArgs e)
+    //{
+    //    // Получаем выбранное время из StartTimePicker
+    //    var startTimeString = StartTimePicker.SelectedItem?.ToString();
+    //    if (string.IsNullOrEmpty(startTimeString))
+    //    {
+    //        return;
+    //    }
+
+    //    var startTime = TimeSpan.Parse(startTimeString);
+
+    //    // Устанавливаем минимальное время для EndTimePicker
+    //    EndTimePicker.MinimumTime = startTime.Add(TimeSpan.FromMinutes(30));
+    //    EndTimePicker.MaximumTime = EndTimePicker.MaximumTime; // Оставляем максимальное время без изменений
+
+    //    // Проверяем, что EndTimePicker не содержит недопустимое время
+    //    var endTimeString = EndTimePicker.SelectedItem?.ToString();
+    //    if (!string.IsNullOrEmpty(endTimeString))
+    //    {
+    //        var endTime = TimeSpan.Parse(endTimeString);
+    //        if (endTime <= startTime)
+    //        {
+    //            ValidationMessage.Text = "End time must be later than start time.";
+    //            EndTimePicker.SelectedItem = null; // Очищаем выбор
+    //        }
+    //        else
+    //        {
+    //            ValidationMessage.Text = string.Empty;
+    //        }
+    //    }
+    //}
     private void OnStartTimeChanged(object sender, EventArgs e)
     {
-        // Получаем выбранное время из StartTimePicker
+        // Получаем выбранные времена
         var startTimeString = StartTimePicker.SelectedItem?.ToString();
-        if (string.IsNullOrEmpty(startTimeString))
+        var endTimeString = EndTimePicker.SelectedItem?.ToString();
+
+        if (string.IsNullOrEmpty(startTimeString) || string.IsNullOrEmpty(endTimeString))
         {
             return;
         }
 
         var startTime = TimeSpan.Parse(startTimeString);
+        var endTime = TimeSpan.Parse(endTimeString);
 
-        // Устанавливаем минимальное время для EndTimePicker
-        EndTimePicker.MinimumTime = startTime.Add(TimeSpan.FromMinutes(30));
-        EndTimePicker.MaximumTime = EndTimePicker.MaximumTime; // Оставляем максимальное время без изменений
-
-        // Проверяем, что EndTimePicker не содержит недопустимое время
-        var endTimeString = EndTimePicker.SelectedItem?.ToString();
-        if (!string.IsNullOrEmpty(endTimeString))
+        // Проверяем, что StartTime меньше EndTime
+        if (startTime >= endTime)
         {
-            var endTime = TimeSpan.Parse(endTimeString);
-            if (endTime <= startTime)
-            {
-                ValidationMessage.Text = "End time must be later than start time.";
-                EndTimePicker.SelectedItem = null; // Очищаем выбор
-            }
-            else
-            {
-                ValidationMessage.Text = string.Empty;
-            }
+            ValidationMessage.Text = "Время начала должно быть раньше времени окончания.";
+            StartTimePicker.SelectedItem = null; // Очищаем выбор
+        }
+        else
+        {
+            ValidationMessage.Text = string.Empty;
         }
     }
-
     private void OnEndTimeChanged(object sender, EventArgs e)
     {
         // Получаем выбранные времена
@@ -137,7 +163,7 @@ public partial class BookingPage : ContentPage
         // Проверяем, что EndTime больше StartTime
         if (endTime <= startTime)
         {
-            ValidationMessage.Text = "End time must be later than start time.";
+            ValidationMessage.Text = "Время окончания должно быть позже времени начала.";
             EndTimePicker.SelectedItem = null; // Очищаем выбор
         }
         else
@@ -156,7 +182,7 @@ public partial class BookingPage : ContentPage
             // Проверяем, выбраны ли начальное и конечное время
             if (string.IsNullOrEmpty(startTimeString) || string.IsNullOrEmpty(endTimeString))
             {
-                await DisplayAlert("Error", "Please select both start and end times.", "OK");
+                await DisplayAlert("Ошибка", "Пожалуйста, выберите время начала и окончания.", "Ок");
                 return;
             }
 
@@ -167,7 +193,7 @@ public partial class BookingPage : ContentPage
             // Проверяем количество гостей
             if (!int.TryParse(GuestsEntry.Text, out var guests) || guests <= 0)
             {
-                await DisplayAlert("Error", "Please enter a valid number of guests.", "OK");
+                await DisplayAlert("Ошибка", "Пожалуйста, укажите действительное количество гостей.", "Ок");
                 return;
             }
 
@@ -176,6 +202,8 @@ public partial class BookingPage : ContentPage
             {
                 UserId = userProfile.ID, // ID пользователя
                 RestaurantId = _restaurant.ID,
+                RestaurantName = _restaurant.Name, // Имя ресторана
+                RestaurantCity = _restaurant.City,
                 TableId = _selectedTable.ID,
                 Date = dateIso8601, // Дата в формате ISO 8601 с временем UTC
                 StartTime = startTimeString + ":00", // Время в формате строки hh:mm:ss
@@ -193,13 +221,13 @@ public partial class BookingPage : ContentPage
             // Проверяем успешность ответа
             if (response != null && response.Message == "Reservation created successfully")
             {
-                await DisplayAlert("Success", "Your reservation has been successfully created.", "OK");
-                var bookingPage = new MainPage(_apiService, _authService, _httpClient);
+                await DisplayAlert("Успех", "Ваше бронирование было успешно создано.", "Ок");
+                var bookingPage = new MainPage(_apiService, _authService, _httpClient,_reservation);
                 await Navigation.PushAsync(bookingPage);
             }
             else
             {
-                await DisplayAlert("Error", "Failed to create reservation. Please try again.", "OK");
+                await DisplayAlert("Ошибка", "Не удалось создать резервирование. Пожалуйста, попробуйте снова.", "Ок");
             }
         }
         catch (FormatException)
@@ -214,5 +242,23 @@ public partial class BookingPage : ContentPage
         {
             await DisplayAlert("Error", $"An unexpected error occurred: {ex.Message}", "OK");
         }
+    }
+    private void OnHomeClicked(object sender, EventArgs e)
+    {
+        var editPage = new MainPage(_apiService, _authService, _httpClient, _reservation);
+        Navigation.PushAsync(editPage);
+    }
+
+    private void OnHistoryClicked(object sender, EventArgs e)
+    {
+        var UserData = _authService.GetUserProfile();
+        var editPage = new ReservationHistoryPage(_apiService, UserData.ID, _authService, _httpClient, _reservation);
+        Navigation.PushAsync(editPage);
+    }
+
+    private void OnSettingsClicked(object sender, EventArgs e)
+    {
+        var editPage = new AccountSettingsPage(_apiService, _authService, _httpClient, _reservation);
+        Navigation.PushAsync(editPage);
     }
 }

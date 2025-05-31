@@ -3,21 +3,196 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:ReserveNow.Controls"
              x:Class="ReserveNow.Views.BookingPage"
-             Title="BookingPage">
-    <StackLayout Padding="20">
-        <DatePicker x:Name="DatePicker" />
-        <local:CustomTimePicker x:Name="StartTimePicker"
-                                Title="Select Start Time"
-                                SelectedIndexChanged="OnStartTimeChanged"/>
+             Title="Бронирование">
+    
+    <Grid>
+        <!-- Определение строк -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <!-- Основная область -->
+            <RowDefinition Height="60" />
+            <!-- Нижняя панель -->
+        </Grid.RowDefinitions>
 
-        <!-- Кастомный TimePicker для конца времени -->
-        <local:CustomTimePicker x:Name="EndTimePicker"
-                                Title="Select End Time" 
-                                SelectedIndexChanged="OnEndTimeChanged"/>
-        <Entry x:Name="GuestsEntry" Placeholder="Number of guests" Keyboard="Numeric" />
-        <Button Text="Check Availability" Clicked="OnCheckAvailabilityClicked" />
-        <Label x:Name="ValidationMessage" TextColor="Red" />
-        <Label x:Name="AvailabilityStatus" IsVisible="False" />
-        <Button x:Name="ConfirmBookingButton" Text="Confirm Booking" IsVisible="False" Clicked="OnConfirmReservationClicked" />
-    </StackLayout>
+        <!-- Основная область для отображения страниц -->
+        <Frame Grid.Row="0"
+           BackgroundColor="{StaticResource BackgroundColor}"
+           Padding="20"
+           CornerRadius="0"
+           HasShadow="False">
+            <StackLayout Spacing="20">
+                <!-- Дата -->
+                <Frame BackgroundColor="White"
+                   CornerRadius="10"
+                   Padding="10"
+                   HasShadow="True">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Image Source="calendar_icon.png"
+                           WidthRequest="24"
+                           HeightRequest="24"
+                           Margin="0,0,10,0"
+                           VerticalOptions="Center" 
+                               HorizontalOptions="Start"/>
+                        <DatePicker x:Name="DatePicker"
+                                    
+                                Format="yyyy-MM-dd"
+                                TextColor="{StaticResource PrimaryTextColor}"
+                                    MinimumWidthRequest="300"
+                                BackgroundColor="Transparent"
+                                HorizontalOptions="FillAndExpand" 
+                                    Margin="25,0,0,0" />
+                        
+                    </Grid>
+                </Frame>
+
+                <!-- Время начала -->
+                <Frame BackgroundColor="White"
+                   CornerRadius="10"
+                   Padding="10"
+                   HasShadow="True">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Image Source="clock_icon.png"
+                           WidthRequest="24"
+                           HeightRequest="24"
+                           Margin="0,0,10,0"
+                           VerticalOptions="Center" HorizontalOptions="Start"/>
+                        <local:CustomTimePicker x:Name="StartTimePicker"
+                                            Title="Время начала"
+                                            SelectedIndexChanged="OnStartTimeChanged"
+                                                MinimumWidthRequest="300"
+                                            TextColor="{StaticResource PrimaryTextColor}"
+                                            BackgroundColor="Transparent"
+                                            HorizontalOptions="FillAndExpand" Margin="25,0,0,0" />
+                    </Grid>
+                </Frame>
+
+                <!-- Время окончания -->
+                <Frame BackgroundColor="White"
+                   CornerRadius="10"
+                   Padding="10"
+                   HasShadow="True">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Image Source="clock_icon.png"
+                           WidthRequest="24"
+                           HeightRequest="24"
+                           Margin="0,0,10,0"
+                           VerticalOptions="Center" HorizontalOptions="Start"/>
+                        <local:CustomTimePicker x:Name="EndTimePicker"
+                                            Title="Время окончания"
+                                            SelectedIndexChanged="OnEndTimeChanged"
+                                            TextColor="{StaticResource PrimaryTextColor}"
+                                                MinimumWidthRequest="300"
+                                            BackgroundColor="Transparent"
+                                            HorizontalOptions="FillAndExpand" Margin="25,0,0,0"/>
+                    </Grid>
+                </Frame>
+
+                <!-- Количество гостей -->
+                <Frame BackgroundColor="White"
+                   CornerRadius="10"
+                   Padding="10"
+                   HasShadow="True">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Image Source="capacity_icon.png"
+                           WidthRequest="24"
+                           HeightRequest="24"
+                           Margin="0,0,10,0"
+                           VerticalOptions="Center" HorizontalOptions="Start"/>
+                        <Entry x:Name="GuestsEntry"
+                           Placeholder="Количество гостей"
+                           Keyboard="Numeric"
+                           TextColor="{StaticResource PrimaryTextColor}"
+                               MinimumWidthRequest="300"
+                           BackgroundColor="Transparent"
+                               PlaceholderColor="{StaticResource SecondaryTextColor}"
+                           HorizontalOptions="FillAndExpand" Margin="25,0,0,0"/>
+                    </Grid>
+                </Frame>
+
+                <!-- Кнопка проверки доступности -->
+                <Button Text="Проверить наличие столов"
+                    BackgroundColor="{StaticResource PrimaryButtonColor}"
+                    TextColor="White"
+                    CornerRadius="20"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                        WidthRequest="300"
+                        FontSize="20"
+                    Clicked="OnCheckAvailabilityClicked" />
+
+                <!-- Сообщение об ошибке -->
+                <Label x:Name="ValidationMessage"
+                   TextColor="Red"
+                   FontSize="Small"
+                   IsVisible="False" />
+
+                <!-- Статус доступности -->
+                <Label x:Name="AvailabilityStatus"
+                   TextColor="{StaticResource PrimaryTextColor}"
+                   FontSize="Medium"
+                   FontAttributes="Bold"
+                   IsVisible="False" HorizontalTextAlignment="Center"/>
+
+                <!-- Кнопка подтверждения бронирования -->
+                <Frame x:Name="ConfirmBookingButton"
+       BackgroundColor="{StaticResource PrimaryButtonColor}"
+       CornerRadius="200"
+      
+       HeightRequest="150"
+       WidthRequest="150"
+       IsVisible="False"
+       Margin="0,50,0,0"
+       HasShadow="True">
+                    <StackLayout Spacing="10"
+                 HorizontalOptions="Center"
+                 VerticalOptions="Center">
+                        <!-- Иконка -->
+                        <Image Source="table_icon.png"
+               WidthRequest="60"
+               HeightRequest="60" />
+
+                        <!-- Текст -->
+                        <Label Text="Забронировать"
+               TextColor="White"
+               FontSize="15"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
+                    </StackLayout>
+
+                    <!-- Обработчик нажатия -->
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnConfirmReservationClicked" />
+                    </Frame.GestureRecognizers>
+                </Frame>
+            </StackLayout>
+        </Frame>
+
+        <!-- Нижняя панель навигации -->
+        <Grid Grid.Row="1" Background="{StaticResource CardBackgroundColor}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Кнопки -->
+            <Button Grid.Column="0"
+            ImageSource="history_icon.png"
+            BackgroundColor="{StaticResource CardBackgroundColor}"
+            TextColor="{StaticResource AccentColor}" 
+            Clicked="OnHistoryClicked"/>
+
+            <Button Grid.Column="1"
+            ImageSource="home_icon.png"
+            BackgroundColor="{StaticResource CardBackgroundColor}"
+            TextColor="{StaticResource AccentColor}" 
+            Clicked="OnHomeClicked"/>
+
+            <Button Grid.Column="2"
+            ImageSource="settings_icon.png"
+            BackgroundColor="{StaticResource CardBackgroundColor}"
+            TextColor="{StaticResource AccentColor}" 
+            Clicked="OnSettingsClicked"/>
+        </Grid>
+    </Grid>
 </ContentPage>

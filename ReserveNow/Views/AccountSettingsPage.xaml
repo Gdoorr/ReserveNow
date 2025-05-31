@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ReserveNow.Views.AccountSettingsPage"
+             Title="Данные аккаунта">
+    <Grid>
+        <!-- Определение строк -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <!-- Основная область -->
+            <RowDefinition Height="60" />
+            <!-- Нижняя панель -->
+        </Grid.RowDefinitions>
+
+        <!-- Основная область для отображения страниц -->
+        <Frame Grid.Row="0" BackgroundColor="{StaticResource BackgroundColor}" Padding="0" HasShadow="False" CornerRadius="0">
+            <ScrollView>
+                <StackLayout Padding="20" Spacing="20">
+                    <!-- Поле для имени -->
+                    <Frame CornerRadius="10" Padding="10" BackgroundColor="{StaticResource CardBackgroundColor}" >
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Image Source="capacity_icon.png" WidthRequest="24" HeightRequest="24" Margin="0,0,10,0" HorizontalOptions="Start"/>
+                            <Entry x:Name="NameEntry" Placeholder="Имя" Text="{Binding Name}" TextColor="{StaticResource PrimaryTextColor}" PlaceholderColor="{StaticResource SecondaryTextColor}" Margin="25,0,0,0" MinimumWidthRequest="300"/>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Поле для email -->
+                    <Frame CornerRadius="10" Padding="10" BackgroundColor="{StaticResource CardBackgroundColor}" >
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Image Source="email_icon.png" WidthRequest="24" HeightRequest="24" Margin="0,0,10,0" HorizontalOptions="Start"/>
+                            <Entry x:Name="EmailEntry" Placeholder="Почта" Text="{Binding Email}" Keyboard="Email" TextColor="{StaticResource PrimaryTextColor}" PlaceholderColor="{StaticResource SecondaryTextColor}" Margin="25,0,0,0" MinimumWidthRequest="300"/>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Поле для телефона -->
+                    <Frame CornerRadius="10" Padding="10" BackgroundColor="{StaticResource CardBackgroundColor}" >
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Image Source="phone_icon.png" WidthRequest="24" HeightRequest="24" Margin="0,0,10,0" HorizontalOptions="Start"/>
+                            <Entry x:Name="PhoneEntry" Placeholder="Телефон" Text="{Binding Phone}" Keyboard="Telephone" TextColor="{StaticResource PrimaryTextColor}" PlaceholderColor="{StaticResource SecondaryTextColor}" Margin="25,0,0,0" MinimumWidthRequest="300"/>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Поле для пароля -->
+                    <Frame CornerRadius="10" Padding="10" BackgroundColor="{StaticResource CardBackgroundColor}" >
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Image Source="lock_icon.svg" WidthRequest="24" HeightRequest="24" Margin="0,0,10,0" HorizontalOptions="Start"/>
+                            <Entry x:Name="PasswordEntry" Placeholder="Пароль" IsPassword="True" TextColor="{StaticResource PrimaryTextColor}" PlaceholderColor="{StaticResource SecondaryTextColor}" Margin="25,0,0,0" MinimumWidthRequest="300"/>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Селектор городов -->
+                    <Frame CornerRadius="10" Padding="10" BackgroundColor="{StaticResource CardBackgroundColor}" >
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Image Source="location_icon.svg" WidthRequest="24" HeightRequest="24" Margin="0,0,10,0" HorizontalOptions="Start"/>
+                            <Picker x:Name="CityPicker" Title="Город" TitleColor="{StaticResource SecondaryTextColor}" TextColor="{StaticResource PrimaryTextColor}" Margin="25,0,0,0" MinimumWidthRequest="300"/>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Кнопка сохранения -->
+                    <Button Text="Обновить данные" Clicked="OnSaveChangesClicked" BackgroundColor="{StaticResource PrimaryButtonColor}" TextColor="{StaticResource SecondaryButtonColor}" CornerRadius="25" HeightRequest="50" FontSize="Medium" />
+                    <Button Text="Выйти из аккаунта"
+                        Clicked="OnLogoutClicked"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource PrimaryTextColor}"
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        HorizontalOptions="Center"
+                        Padding="10" />
+                </StackLayout>
+            </ScrollView>
+        </Frame>
+
+        <!-- Нижняя панель навигации -->
+        <Grid Grid.Row="1" Background="{StaticResource CardBackgroundColor}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Кнопки -->
+            <Button Grid.Column="0"
+            ImageSource="history_icon.png"
+            BackgroundColor="{StaticResource CardBackgroundColor}"
+            TextColor="{StaticResource AccentColor}" 
+            Clicked="OnHistoryClicked"/>
+
+            <Button Grid.Column="1"
+            ImageSource="home_icon.png"
+            BackgroundColor="{StaticResource CardBackgroundColor}"
+            TextColor="{StaticResource AccentColor}" 
+            Clicked="OnHomeClicked"/>
+
+            <Button Grid.Column="2"
+            ImageSource="settings_icon.png"
+            BackgroundColor="{StaticResource CardBackgroundColor}"
+            TextColor="{StaticResource AccentColor}" 
+            Clicked="OnSettingsClicked"/>
+        </Grid>
+    </Grid>
+</ContentPage>

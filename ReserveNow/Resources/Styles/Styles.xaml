@@ -3,19 +3,25 @@
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-    <Color x:Key="PrimaryColor">#FF6F61</Color>
-    <Color x:Key="SecondaryColor">#666666</Color>
-    <Color x:Key="BackgroundColor">#F5F5F5</Color>
+    <Color x:Key="BackgroundColor">#F4E9D8</Color>
+    <Color x:Key="CardColor">#FFFFFF</Color>
+    <Color x:Key="PrimaryTextColor">#333333</Color>
+    <Color x:Key="AccentColor">#FFA500</Color>
 
+    <!-- Кисти -->
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}" />
+    <SolidColorBrush x:Key="CardBrush" Color="{StaticResource CardColor}" />
+    <SolidColorBrush x:Key="PrimaryTextBrush" Color="{StaticResource PrimaryTextColor}" />
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}" />
     <!-- Стиль текста -->
     <Style TargetType="Label">
-        <Setter Property="TextColor" Value="{StaticResource SecondaryColor}" />
+        <Setter Property="TextColor" Value="{StaticResource AccentColor}" />
         <Setter Property="FontSize" Value="Medium" />
     </Style>
 
     <!-- Стиль кнопки -->
     <Style TargetType="Button">
-        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
+        <!--<Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />-->
         <Setter Property="TextColor" Value="White" />
         <Setter Property="CornerRadius" Value="10" />
         <Setter Property="FontSize" Value="Medium" />
@@ -38,7 +44,20 @@
     <Style TargetType="BoxView">
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
     </Style>
-
+    <Style x:Key="CenteredTitleView" TargetType="ContentView">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Grid HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="{Binding Title}"
+                       FontSize="Medium"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource PrimaryTextColor}, Dark={StaticResource White}}"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center" />
+                </Grid>
+            </Setter.Value>
+        </Setter>
+    </Style>
     <!--<Style TargetType="Button">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
@@ -453,8 +472,9 @@
 
     <Style TargetType="NavigationPage">
         <Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}" />
-        <Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource White}}" />
+        <Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource PrimaryTextColor}, Dark={StaticResource White}}" />
         <Setter Property="IconColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource White}}" />
+
     </Style>
 
     <Style TargetType="TabbedPage">

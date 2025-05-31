@@ -2,22 +2,91 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ReserveNow.LoginPage"
-             Title="Login">
+             Title="Авторизация">
+   
+    <ScrollView BackgroundColor="#F5F5F5">
+        <VerticalStackLayout Spacing="20" Padding="30">
+            <!-- Логотип или заголовок -->
+            <Image Source="app_logo.png"
+               WidthRequest="100"
+               HeightRequest="100"
+               HorizontalOptions="Center"
+               Margin="0,20,0,30" />
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="25" Padding="30">
             <!-- Username Input -->
-            <Entry x:Name="UsernameEntry" Placeholder="Email" />
+            <Frame CornerRadius="10"
+               Padding="10"
+               BackgroundColor="White"
+               HasShadow="True">
+                <Grid>
+                    <Image Source="email_icon.png"
+                       WidthRequest="20"
+                       HeightRequest="20"
+                       VerticalOptions="Center"
+                       Margin="10,0,0,0" HorizontalOptions="Start"/>
+                    <Entry Placeholder="Почта"
+                       TextColor="{StaticResource PrimaryTextColor}"
+                       PlaceholderColor="{StaticResource SecondaryTextColor}"
+                       HorizontalOptions="FillAndExpand"
+                       Margin="40,0,10,0" x:Name="UsernameEntry"/>
+                </Grid>
+            </Frame>
 
             <!-- Password Input -->
-            <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
+            <Frame CornerRadius="10"
+               Padding="10"
+               BackgroundColor="White"
+               HasShadow="True">
+                <Grid>
+                    <Image Source="lock_icon.png"
+                       WidthRequest="20"
+                       HeightRequest="20"
+                       VerticalOptions="Center"
+                       Margin="10,0,0,0" HorizontalOptions="Start"/>
+                    <Entry Placeholder="Пароль"
+                       IsPassword="True"
+                       TextColor="{StaticResource PrimaryTextColor}"
+                       PlaceholderColor="{StaticResource SecondaryTextColor}"
+                       HorizontalOptions="FillAndExpand"
+                       Margin="40,0,10,0" x:Name="PasswordEntry"/>
+                </Grid>
+            </Frame>
 
             <!-- Login Button -->
-            <Button Text="Login" Clicked="OnLoginClicked" />
-            <Button Text="Register" Clicked="OnRegisterClicked" BackgroundColor="Transparent" TextColor="Blue" />
-            <Button Text="Забыли пароль?" Clicked="OnForgotPasswordClicked" />
+            <Button Text="Войти"
+                BackgroundColor="{StaticResource PrimaryButtonColor}"
+                TextColor="{StaticResource SecondaryButtonColor}"
+                FontSize="Medium"
+                CornerRadius="25"
+                HeightRequest="50"
+                Clicked="OnLoginClicked" />
+
+            <!-- Register Button -->
+            <Button Text="Зарегистрироваться"
+                BackgroundColor="Transparent"
+                TextColor="{StaticResource PrimaryButtonColor}"
+                FontSize="Medium"
+                BorderWidth="1"
+                BorderColor="{StaticResource PrimaryButtonColor}"
+                CornerRadius="25"
+                HeightRequest="50"
+                Clicked="OnRegisterClicked" />
+
+            <!-- Forgot Password -->
+            <Button Text="Забыли пароль?"
+                BackgroundColor="Transparent"
+                TextColor="{StaticResource PrimaryTextColor}"
+                FontSize="Small"
+                Clicked="OnForgotPasswordClicked"
+                HorizontalOptions="Center" />
+
             <!-- Status Label -->
-            <Label x:Name="StatusLabel" Text="" HorizontalTextAlignment="Center" />
+            <Label x:Name="StatusLabel"
+               Text=""
+               TextColor="#FF4444"
+               HorizontalTextAlignment="Center"
+               FontAttributes="Italic"
+               FontSize="Small" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
